@@ -3,8 +3,12 @@
 (function() {
     function Storage() {
         this.saveNotes = function(data) {
-            localStorage.setItem('data', data);
+            localStorage.setItem('data', JSON.stringify(data));
         }.bind(this);
+
+        this.returnNotes = function() {
+            return JSON.parse(localStorage.getItem('data'));
+        };
     }
 
     function Note(text, id) {
@@ -43,23 +47,33 @@
     function App() {
         this.button = document.getElementById('button');
         this.input = document.getElementById('input');
-        this.countar = 0;
-        this.notes = [];
         this.storage = new Storage();
+        this.counter = Object.keys(this.storage.returnNotes()).length;
 
-        this.saveNote = function() {
+        this.clickButton = function() {
             this.button.onclick = function() {
                 if (this.input.value !== '') {
-                    var note = new Note(this.input.value, this.notes);
+                    new Note(this.input.value, this.counter);
+                    var new_storage = this.storage.returnNotes();
+
+                    new_storage[this.counter] = {text: this.input.value};
                     this.input.value = '';
-                    this.countar++;
-                    this.notes.push(note);
-                    this.storage.saveNotes(this.notes);
+                    this.storage.saveNotes(new_storage);
+                    this.counter++;
                 }
             }.bind(this);
         }.bind(this);
 
-        this.saveNote();
+        this.renderNotes = function() {
+            var saved_notes = this.storage.returnNotes();
+
+            for (var i in saved_notes) {
+                new Note(saved_notes[i]['text'], i);
+            }
+        }.bind(this);
+
+        this.renderNotes();
+        this.clickButton();
     }
 
     var app = new App();
