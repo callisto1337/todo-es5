@@ -3,11 +3,21 @@
 (function() {
     function Storage() {
         this.saveNotes = function(data) {
-            localStorage.setItem('data', JSON.stringify(data));
-        }.bind(this);
+            try {
+                localStorage.setItem('data', JSON.stringify(data));
+            }
+            catch (err) {
+                document.write('An error has occurred. Please try again later.');
+            }
+        };
 
         this.returnNotes = function() {
-            return JSON.parse(localStorage.getItem('data'));
+            try {
+                return JSON.parse(localStorage.getItem('data'));
+            }
+            catch (err) {
+                document.write('An error has occurred. Please try again later.');
+            }
         };
     }
 
@@ -17,17 +27,17 @@
         this.list = document.getElementById('list');
 
         this.createNote = function() {
-            var new_note = document.createElement('li');
+            var new_item = document.createElement('li');
             var button_del = document.createElement('button');
 
-            button_del.innerText = 'del';
+            button_del.innerText = '×';
             button_del.setAttribute('class', 'del');
 
-            new_note.innerText = this.text + ' ';
-            new_note.appendChild(button_del);
-            new_note.setAttribute('data-id', this.id);
+            new_item.innerHTML = '<span class="text">' + this.text + '</span> ';
+            new_item.appendChild(button_del);
+            new_item.setAttribute('data-id', this.id);
 
-            this.list.appendChild(new_note);
+            this.list.appendChild(new_item);
         };
 
         this.deleteNote = function() {
@@ -38,7 +48,7 @@
                     this.list.removeChild(target.parentNode);
                 }
             }.bind(this);
-        }.bind(this);
+        };
 
         this.createNote();
         this.deleteNote();
@@ -62,7 +72,7 @@
                     this.counter++;
                 }
             }.bind(this);
-        }.bind(this);
+        };
 
         this.renderNotes = function() {
             var saved_notes = this.storage.returnNotes();
