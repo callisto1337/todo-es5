@@ -37,7 +37,7 @@
             new_item.appendChild(button_del);
             new_item.setAttribute('data-id', this.id);
 
-            this.list.appendChild(new_item);
+            return new_item;
         };
 
         this.deleteNote = function() {
@@ -50,7 +50,6 @@
             }.bind(this);
         };
 
-        this.createNote();
         this.deleteNote();
     }
 
@@ -70,19 +69,22 @@
                     this.input.value = '';
                     this.storage.saveNotes(new_storage);
                     this.counter++;
+                    this.renderNotes(this.storage.returnNotes());
                 }
             }.bind(this);
         };
 
-        this.renderNotes = function() {
-            var saved_notes = this.storage.returnNotes();
+        this.renderNotes = function(data) {
+            var list = document.getElementById('list');
 
-            for (var i in saved_notes) {
-                new Note(saved_notes[i]['text'], i);
+            list.clear = '';
+            for (var i in data) {
+                var item_list = new Note(data[i]['text'], i);
+                list.appendChild(item_list.createNote());
             }
-        }.bind(this);
+        };
 
-        this.renderNotes();
+        this.renderNotes(this.storage.returnNotes());
         this.clickButton();
     }
 
