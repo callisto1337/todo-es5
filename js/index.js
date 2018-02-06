@@ -13,7 +13,10 @@
 
         this.returnNotes = function() {
             try {
-                return JSON.parse(localStorage.getItem('data'));
+                if (JSON.parse(localStorage.getItem('data'))) {
+                    return JSON.parse(localStorage.getItem('data'));
+                }
+                return [];
             }
             catch (err) {
                 document.write('An error has occurred. Please try again later.');
@@ -57,7 +60,8 @@
         this.button = document.getElementById('button');
         this.input = document.getElementById('input');
         this.storage = new Storage();
-        this.counter = Object.keys(this.storage.returnNotes()).length;
+        this.counter = Object.keys(this.storage.returnNotes()).length || 0;
+        console.log(this.counter);
 
         this.clickButton = function() {
             this.button.onclick = function() {
@@ -77,7 +81,7 @@
         this.renderNotes = function(data) {
             var list = document.getElementById('list');
 
-            list.clear = '';
+            list.innerText = '';
             for (var i in data) {
                 var item_list = new Note(data[i]['text'], i);
                 list.appendChild(item_list.createNote());
