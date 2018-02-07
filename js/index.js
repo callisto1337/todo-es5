@@ -27,7 +27,6 @@
     function Note(text, id) {
         this.text = text;
         this.id = id;
-        this.list = document.getElementById('list');
 
         this.createNote = function() {
             var new_item = document.createElement('li');
@@ -42,38 +41,41 @@
 
             return new_item;
         };
-
-        this.deleteNote = function() {
-            document.onclick = function(event) {
-                var target = event.target;
-
-                if (target.className === 'del') {
-                    this.list.removeChild(target.parentNode);
-                }
-            }.bind(this);
-        };
-
-        this.deleteNote();
     }
 
     function App() {
         this.button = document.getElementById('button');
         this.input = document.getElementById('input');
+        this.list = document.getElementById('list');
         this.storage = new Storage();
         this.counter = Object.keys(this.storage.returnNotes()).length || 0;
-        console.log(this.counter);
 
-        this.clickButton = function() {
+        this.saveButton = function() {
             this.button.onclick = function() {
                 if (this.input.value !== '') {
-                    new Note(this.input.value, this.counter);
                     var new_storage = this.storage.returnNotes();
 
                     new_storage[this.counter] = {text: this.input.value};
+                    new Note(this.input.value, this.counter);
                     this.input.value = '';
                     this.storage.saveNotes(new_storage);
                     this.counter++;
                     this.renderNotes(this.storage.returnNotes());
+                }
+            }.bind(this);
+        };
+
+        this.deleteButton = function() {
+            document.onclick = function(event) {
+                var target = event.target;
+
+                if (target.className === 'del' && confirm('Do you want to remove the note?')) {
+                    var notes = this.storage.returnNotes();
+
+                    this.list.removeChild(target.parentNode);
+                    notes.splice(target.parentNode.getAttribute('data-id'), 1);
+                    this.storage.saveNotes(notes);
+                    this.renderNotes(notes);
                 }
             }.bind(this);
         };
@@ -89,7 +91,8 @@
         };
 
         this.renderNotes(this.storage.returnNotes());
-        this.clickButton();
+        this.saveButton();
+        this.deleteButton();
     }
 
     var app = new App();
