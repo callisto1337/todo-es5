@@ -27,27 +27,27 @@
     function Note(text, id) {
         this.text = text;
         this.id = id;
-
-        this.createNote = function() {
-            var new_item = document.createElement('li');
-            var button_del = document.createElement('button');
-            var button_edit = document.createElement('button');
-
-            button_edit.innerText = '✎';
-            button_edit.className = 'edit';
-
-            button_del.innerText = '✖';
-            button_del.className = 'del';
-
-            new_item.innerHTML = '<span class="text">' + this.text + '</span>&nbsp;';
-            new_item.className = 'item';
-            new_item.appendChild(button_del);
-            new_item.appendChild(button_edit);
-            new_item.setAttribute('data-id', this.id);
-
-            return new_item;
-        };
     }
+
+    Note.prototype.createNote = function() {
+        var new_item = document.createElement('li'),
+            button_del = document.createElement('button'),
+            button_edit = document.createElement('button');
+
+        button_edit.innerText = '✎';
+        button_edit.className = 'edit';
+
+        button_del.innerText = '✖';
+        button_del.className = 'del';
+
+        new_item.innerHTML = '<span class="text">' + this.text + '</span>&nbsp;';
+        new_item.className = 'item';
+        new_item.appendChild(button_edit);
+        new_item.appendChild(button_del);
+        new_item.setAttribute('data-id', this.id);
+
+        return new_item;
+    };
 
     function App() {
         this.input = document.getElementById('input');
@@ -80,8 +80,9 @@
                 if (target.className === 'del' && confirm('Do you want to remove the note?')) {
                     var notes = this.storage.returnNotes();
 
-                    this.list.removeChild(target.parentNode);
                     notes.splice(target.parentNode.getAttribute('data-id'), 1);
+                    this.counter = notes.length;
+                    this.list.removeChild(target.parentNode);
                     this.storage.saveNotes(notes);
                     this.renderNotes(notes);
                 }
@@ -93,14 +94,15 @@
                 var target = event.target;
 
                 if (target.className === 'edit') {
-                    var current_text = target.parentNode.childNodes[0].innerText;
-                    var new_text = prompt('Enter a new value:', current_text);
+                    var current_text = target.parentNode.childNodes[0].innerText,
+                        new_text = prompt('Enter a new value:', current_text),
+                        new_storage = this.storage.returnNotes();
+
                     if (!new_text) return false;
-                    var new_storage = this.storage.returnNotes();
 
                     target.parentNode.childNodes[0].innerHTML = new_text;
-
                     new_storage[target.parentNode.getAttribute('data-id')] = {text: new_text};
+
                     this.storage.saveNotes(new_storage);
                     this.renderNotes(new_storage);
                 }
