@@ -31,12 +31,17 @@
         this.createNote = function() {
             var new_item = document.createElement('li');
             var button_del = document.createElement('button');
+            var button_edit = document.createElement('button');
 
-            button_del.innerText = '×';
+            button_edit.innerText = '✎';
+            button_edit.setAttribute('class', 'edit');
+
+            button_del.innerText = '✖';
             button_del.setAttribute('class', 'del');
 
             new_item.innerHTML = '<span class="text">' + this.text + '</span> ';
             new_item.appendChild(button_del);
+            new_item.appendChild(button_edit);
             new_item.setAttribute('data-id', this.id);
 
             return new_item;
@@ -44,15 +49,17 @@
     }
 
     function App() {
-        this.button = document.getElementById('button');
         this.input = document.getElementById('input');
         this.list = document.getElementById('list');
+        this.form = document.getElementById('form');
         this.storage = new Storage();
         this.counter = Object.keys(this.storage.returnNotes()).length || 0;
 
-        this.saveButton = function() {
-            this.button.onclick = function() {
-                if (this.input.value !== '') {
+        this.saveNote = function() {
+            this.form.onsubmit = function(e) {
+                e.preventDefault();
+
+                if (this.input.value) {
                     var new_storage = this.storage.returnNotes();
 
                     new_storage[this.counter] = {text: this.input.value};
@@ -60,13 +67,13 @@
                     this.input.value = '';
                     this.storage.saveNotes(new_storage);
                     this.counter++;
-                    this.renderNotes(this.storage.returnNotes());
+                    this.renderNotes(new_storage);
                 }
             }.bind(this);
         };
 
         this.deleteButton = function() {
-            document.onclick = function(event) {
+            document.addEventListener('click', function(event) {
                 var target = event.target;
 
                 if (target.className === 'del' && confirm('Do you want to remove the note?')) {
@@ -77,7 +84,25 @@
                     this.storage.saveNotes(notes);
                     this.renderNotes(notes);
                 }
-            }.bind(this);
+            }.bind(this));
+        };
+
+        this.editButton = function() {
+            document.addEventListener('click', function(event) {
+                var target = event.target;
+
+                if (target.className === 'edit') {
+                    var new_text = prompt('Enter a new value:', '');
+                    if (!new_text) return false;
+                    var new_storage = this.storage.returnNotes();
+
+                    target.parentNode.childNodes[0].innerHTML = new_text;
+
+                    new_storage[target.parentNode.getAttribute('data-id')] = {text: new_text};
+                    this.storage.saveNotes(new_storage);
+                    this.renderNotes(new_storage);
+                }
+            }.bind(this));
         };
 
         this.renderNotes = function(data) {
@@ -91,7 +116,8 @@
         };
 
         this.renderNotes(this.storage.returnNotes());
-        this.saveButton();
+        this.saveNote();
+        this.editButton();
         this.deleteButton();
     }
 
