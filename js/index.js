@@ -34,12 +34,13 @@
             var button_edit = document.createElement('button');
 
             button_edit.innerText = '✎';
-            button_edit.setAttribute('class', 'edit');
+            button_edit.className = 'edit';
 
             button_del.innerText = '✖';
-            button_del.setAttribute('class', 'del');
+            button_del.className = 'class';
 
-            new_item.innerHTML = '<span class="text">' + this.text + '</span> ';
+            new_item.innerHTML = '<span class="text">' + this.text + '</span>&nbsp;';
+            new_item.className = 'item';
             new_item.appendChild(button_del);
             new_item.appendChild(button_edit);
             new_item.setAttribute('data-id', this.id);
@@ -62,7 +63,7 @@
                 if (this.input.value) {
                     var new_storage = this.storage.returnNotes();
 
-                    new_storage[this.counter] = {text: this.input.value};
+                    new_storage[this.counter] = {text: this.input.value.slice(0, 23)};
                     new Note(this.input.value, this.counter);
                     this.input.value = '';
                     this.storage.saveNotes(new_storage);
@@ -92,7 +93,8 @@
                 var target = event.target;
 
                 if (target.className === 'edit') {
-                    var new_text = prompt('Enter a new value:', '');
+                    var current_text = target.parentNode.childNodes[0].innerText;
+                    var new_text = prompt('Enter a new value:', current_text).slice(0, 23);
                     if (!new_text) return false;
                     var new_storage = this.storage.returnNotes();
 

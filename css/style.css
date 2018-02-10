@@ -1,0 +1,53 @@
+body {
+    text-align: center;
+    font-family: sans-serif;
+    counter-reset: list;
+}
+
+.wrapper {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+#list {
+    padding: 0;
+    text-align: left;
+}
+
+.item {
+    display: flex;
+    border: 1px solid #dadada;
+    padding: 5px;
+    align-items: center;
+}
+
+.item:not(:last-of-type) {
+    border-bottom: 0;
+}
+
+.text {
+    flex: 1;
+    overflow: hidden;
+    margin-right: 5px;
+}
+
+.text:before {
+    counter-increment: list;                 /* Инкрементирует счетчик*/
+    content: counter(list) ". ";
+}
+
+#input {
+    border: 1px solid #dadada;
+}
+
+#input,
+#button {
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #dadada;
+}
+
+.del,
+.edit {
+    padding: 1px 5px;
+}
