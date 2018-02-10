@@ -37,7 +37,7 @@
             button_edit.className = 'edit';
 
             button_del.innerText = '✖';
-            button_del.className = 'class';
+            button_del.className = 'del';
 
             new_item.innerHTML = '<span class="text">' + this.text + '</span>&nbsp;';
             new_item.className = 'item';
