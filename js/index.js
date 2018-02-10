@@ -63,7 +63,7 @@
                 if (this.input.value) {
                     var new_storage = this.storage.returnNotes();
 
-                    new_storage[this.counter] = {text: this.input.value.slice(0, 23)};
+                    new_storage[this.counter] = {text: this.input.value};
                     new Note(this.input.value, this.counter);
                     this.input.value = '';
                     this.storage.saveNotes(new_storage);
@@ -94,7 +94,7 @@
 
                 if (target.className === 'edit') {
                     var current_text = target.parentNode.childNodes[0].innerText;
-                    var new_text = prompt('Enter a new value:', current_text).slice(0, 23);
+                    var new_text = prompt('Enter a new value:', current_text);
                     if (!new_text) return false;
                     var new_storage = this.storage.returnNotes();
 

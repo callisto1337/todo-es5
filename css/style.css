@@ -18,6 +18,7 @@ body {
     display: flex;
     border: 1px solid #dadada;
     padding: 5px;
+    padding-left: 10px;
     align-items: center;
 }
 
@@ -32,22 +33,31 @@ body {
 }
 
 .text:before {
-    counter-increment: list;                 /* Инкрементирует счетчик*/
+    counter-increment: list;
     content: counter(list) ". ";
-}
-
-#input {
-    border: 1px solid #dadada;
 }
 
 #input,
 #button {
-    padding: 5px;
     box-sizing: border-box;
     border: 1px solid #dadada;
+}
+
+#input {
+    flex: 1;
+    padding: 6px;
+    border-right: 0;
+}
+
+#button {
+    padding: 8px 10px;
 }
 
 .del,
 .edit {
     padding: 1px 5px;
+}
+
+#form {
+    display: flex;
 }
